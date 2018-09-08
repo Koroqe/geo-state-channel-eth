@@ -204,15 +204,16 @@ contract GeoEthChannels {
 
         bool isAliceReceiver = channels[channelID].alice == receiver ? true : false;
 
-        for (uint256 i = 0; i < receiptID.length; i++) {
+//        for (uint256 i = 0; i < receiptID.length; i++) {
 
             // make sure that signer is from correct channel
-            require()
+//            require()
 
             // make sure that receiptID is bigger than sender's nonce
 
             // make sure that channelEpoch in receipt is fit to current epoch
 
+//          }
 
 
 
@@ -304,11 +305,11 @@ contract GeoEthChannels {
     internal
     returns(address signer)
     {
-        bytes32 message_hash = keccak256(abi.encodePacked(
+        bytes32 message_hash = keccak256(
             channelID,
             auditEpoch,
             aliceBalance,
-            bobBalance));
+            bobBalance);
         signer = ECVerify.ecverify(message_hash, signature);
     }
 
@@ -320,10 +321,10 @@ contract GeoEthChannels {
     internal
     returns(address signer)
     {
-        bytes32 message_hash = keccak256(abi.encodePacked(
-            channelID,
+        bytes32 message_hash = keccak256(
+            bobBalance,
             aliceBalance,
-            bobBalance));
+            channelID);
         signer = ECVerify.ecverify(message_hash, signature);
     }
 
