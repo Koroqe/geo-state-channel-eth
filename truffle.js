@@ -1,10 +1,18 @@
-const PrivateKeyProvider = require('truffle-privatekey-provider');
+/*
+    File 'test_private_key.js' should be created in root directory.
 
-const privateKey = process.env.ACCOUNT_PRIVATE_KEY;
+    export default function getPrivate() {
+        return "0x32129c03c654c24814c2bb730e556fc79e1024505addb231a22536d18c142a7"
+    }
+ */
+
+import getPrivate from './test_private_key';
+
+const PrivateKeyProvider = require('truffle-privatekey-provider');
+const privateKey = getPrivate();
 
 module.exports = {
     // See <http://truffleframework.com/docs/advanced/configuration>
-    // to customize your Truffle configuration!
 
     networks: {
         dev: {
