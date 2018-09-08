@@ -57,6 +57,7 @@ contract GeoEthChannelsVer2 {
 
     function getClosingRequestDetails(
         bytes32 channelID)
+    external
     returns(
         uint256 closingRequested,
         uint256 channelEpoch,
@@ -89,6 +90,7 @@ contract GeoEthChannelsVer2 {
             balanceAlice: msg.value,
             balanceBob: 0
         });
+        emit ChannelCreated(channelID);
     }
 
     /// @dev makes channel bidirectional
@@ -112,6 +114,8 @@ contract GeoEthChannelsVer2 {
         // update channel
         channels[channelID].balanceBob = msg.value;
         channels[channelID].state = ChannelStates.Bidirectional;
+
+        emit ChannelResponded(channelID);
     }
 
     function auditProofSettlement(
@@ -155,23 +159,37 @@ contract GeoEthChannelsVer2 {
         if (closingRequests[channelID].closingRequested == 0) {
             closingRequests[channelID].closingRequested = block.number;
             channels[channelID].state = uint8(ChannelStates.Settlement);
+            emit ChannelSettled(channelID);
         }
 
         // update channel and request data
         channels[channelID].balanceAlice = balanceAlice;
         channels[channelID].balanceBob = balanceBob;
         closingRequests[channelID].auditEpoch = auditEpoch;
+
+        emit NewAuditProofs(channelID);
     }
 
-    function receiptsProofSettlement() {
+    function receiptsProofSettlement(
+        bytes32 channelID
+    )
+    external
+    {
 
         // make sure that channel still not closed or uninitialized
+        require(channels[channelID].state != uint8(ChannelStates.Closed));
+        require(channels[channelID].state != uint8(ChannelStates.Uninitialized));
 
         // set settlement if closing not requested yet
         if (closingRequests[channelID].closingRequested == 0) {
             closingRequests[channelID].closingRequested = block.number;
         }
-        // todo impl
+
+        // allow to settle with receipts only from epoch 0
+
+        // impl
+
+        emit NewReceiptsProofs(channelID);
     }
 
     function cooperativeClose(
@@ -180,7 +198,9 @@ contract GeoEthChannelsVer2 {
         uint256 balanceBob,
         bytes signatureAlice,
         bytes signatureBob
-    ) {
+    )
+    external
+    {
         // make sure that channel opened
         require(channels[channelID].state != uint8(ChannelStates.Uninitialized));
         require(channels[channelID].state != uint8(ChannelStates.Closed));
@@ -203,26 +223,36 @@ contract GeoEthChannelsVer2 {
             signatureBob
         ));
 
-        // send ethers to parties
+        // update channel data
+        channels[channelID].balanceAlice = balanceAlice;
+        channels[channelID].balanceBob = balanceBob;
+        channels[channelID].state = ChannelStates.Closed;
+
+        // send ether to parties
         channels[channelID].alice.transfer(balanceAlice);
         channels[channelID].bob.transfer(balanceBob);
+
+        emit ChannelClosed(channelID);
     }
 
     function closeChannel(
-        bytes32 channelID
-    ) {
+        bytes32 channelID)
+    external
+    {
         // make sure that channel ready to close
         require(closingRequests[channelID].closingRequested + closingTimeout <= block.number);
 
         // make sure that channel still settled
         require(channels[channelID].state == uint8(ChannelStates.Settled));
 
-        // update channel info
+        // update channel data
         channels[channelID].state = ChannelStates.Closed;
 
-        //send ethers to parties
-        channels[channelID].alice.transfer(balanceAlice);
-        channels[channelID].bob.transfer(balanceBob);
+        //send ether to parties
+        channels[channelID].alice.transfer(channels[channelID].balanceAlice);
+        channels[channelID].bob.transfer(channels[channelID].balanceBob);
+
+        emit ChannelClosed(channelID);
     }
 
     function calcChannelID(
@@ -236,12 +266,15 @@ contract GeoEthChannelsVer2 {
         return keccak256(alice, bob);
     }
 
+    /// INTERNAL
+
     function extractAuditProofSettlementSignature(
         bytes32 channelID,
         uint256 auditEpoch,
         uint256 aliceBalance,
         uint256 bobBalance,
         bytes signature)
+    internal
     returns(address signer)
     {
         bytes32 message_hash = keccak256(
@@ -257,7 +290,9 @@ contract GeoEthChannelsVer2 {
         uint256 aliceBalance,
         uint256 bobBalance,
         bytes signature)
-    returns(address signer) {
+    internal
+    returns(address signer)
+    {
         bytes32 message_hash = keccak256(
             channelID,
             aliceBalance,
@@ -272,6 +307,6 @@ contract GeoEthChannelsVer2 {
     event ChannelSettled(bytes32 indexed _channelID);
     event ChannelClosed(bytes32 indexed _channelID);
 
-    event NewReceiptsProved(bytes32 indexed _channelID);
-    event NewAuditProved(bytes32 indexed _channelID);
+    event NewReceiptsProofs(bytes32 indexed _channelID);
+    event NewAuditProofs(bytes32 indexed _channelID);
 }
