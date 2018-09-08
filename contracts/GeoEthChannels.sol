@@ -79,8 +79,14 @@ contract GeoEthChannels {
         // getting channel id
         bytes32 channelID = calcChannelID(msg.sender, bob);
 
-        // make sure, that channel haven't opened before
-        require(channels[channelID].state == ChannelStates.Uninitialized);
+        // make sure, that channel is inactive
+        require(channels[channelID].state == ChannelStates.Uninitialized ||
+            channels[channelID].state == ChannelStates.Closed);
+
+        // Clear data if channel was closed
+        if (channels[channelID].state == ChannelStates.Closed) {
+            delete closingRequests[channelID];
+        }
 
         // initialize channel
         channels[channelID] = Channel({
@@ -90,6 +96,7 @@ contract GeoEthChannels {
             balanceAlice: msg.value,
             balanceBob: 0
         });
+
         emit ChannelCreated(channelID);
     }
 
