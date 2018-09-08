@@ -205,7 +205,6 @@ contract GeoEthChannels {
         bool isAliceReceiver = channels[channelID].alice == receiver ? true : false;
 
 //        for (uint256 i = 0; i < receiptID.length; i++) {
-
             // make sure that signer is from correct channel
             // make sure that receiptID is bigger than sender's nonce
             // make sure that channelEpoch in receipt is fit to current epoch
