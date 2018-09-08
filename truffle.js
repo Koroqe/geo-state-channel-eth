@@ -1,5 +1,5 @@
 const PrivateKeyProvider = require('truffle-privatekey-provider');
-const PRIVATE = require('./test_private_key');
+const {PRIVATE} = require('./test_private_key');
 /*
     File 'test_private_key.js' should be created in root directory with following:
 
