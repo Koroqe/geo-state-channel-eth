@@ -12,7 +12,7 @@ The channel lifecycle is as follows:
   <img width="45%" height="35%" src="https://github.com/Koroqe/geo-state-channel-eth/blob/master/images/Screenshot_11.png">
 </p>
 
-2. During the channel usage it will constantly increases channel epoch. Channel settlement also allowed with receipts, which not exceeds current commited channel epoch. In this case both participants should provide their receipts and they will able to withdraw balances after locktime period. Unless they sign cooperative close message and commit it in contract.
+2. During the channel usage it will constantly increases channel epoch. Channel settlement also allowed with receipts, which not exceeds current commited channel epoch. In this case both participants should provide their receipts (still in development) and they will able to withdraw balances after locktime period. Unless they sign cooperative close message and commit it in contract.
 
 ![State_channel_lifecycle2](https://github.com/Koroqe/geo-state-channel-eth/blob/master/images/Screenshot_9.png)
 
