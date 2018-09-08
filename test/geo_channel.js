@@ -1,5 +1,6 @@
 const Web3 = require('web3');
 const web3 = new Web3('ws://localhost:7545');
+// const assertRevert = require('./utils/assertRevert');
 
 const GeoEthChannels = artifacts.require("GeoEthChannels");
 
@@ -8,7 +9,6 @@ contract ('GeoEthChannels', accounts => {
     const deployer = accounts[0];
     const alice = accounts[1];
     const bob = accounts[2];
-
 
     let channelID = web3.utils.soliditySha3(alice, bob);
 
@@ -20,10 +20,7 @@ contract ('GeoEthChannels', accounts => {
 
     before('setup', async () => {
         channelsContract = await GeoEthChannels.new({from: deployer});
-
     });
-
-    //should create a channel
 
     describe('Channel opening', () => {
 
@@ -57,8 +54,10 @@ contract ('GeoEthChannels', accounts => {
             assert.equal(details[4].toString(), bobsDeposit, 'Bob"s deposit should fit');
         });
 
-        it('should calculate correct channelID', async() => {
-
+        it('should not respond to unopened channel', async() => {
+            // let result = await channelsContract.respondChannel(bob, {from: alice, value: bobsDeposit});
+            // console.log("Result: " + result);
+            // await channelsContract.openChannel(alice, {from: bob, value: bobsDeposit});
         });
     });
 
@@ -88,20 +87,6 @@ contract ('GeoEthChannels', accounts => {
             showBalancesAB()
         })
     });
-
-
-    /*
-    RECEIPT
-    {
-	"receipt_id":1,
-	"epoch_id": 0,
-	"amount": 100,
-	"receiver_address": "0x95e465AeF5091AEf1CF3619678D0283F5E7B5586"
-    }
-
-    sig: 0xc5107900d84087b38f0cb8dcf14e4edbfb4a6514bc159de1bf75b54ae2c525843bcf8f20a595f2e8bf580a085be902248a0177c5342e323b3874ff5918c14c331c
-
-     */
 
     function showBalancesAB() {
         const aliceBalance = web3.eth.getBalance(alice).then(

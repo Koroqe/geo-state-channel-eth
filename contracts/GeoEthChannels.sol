@@ -207,17 +207,9 @@ contract GeoEthChannels {
 //        for (uint256 i = 0; i < receiptID.length; i++) {
 
             // make sure that signer is from correct channel
-//            require()
-
             // make sure that receiptID is bigger than sender's nonce
-
             // make sure that channelEpoch in receipt is fit to current epoch
-
-//          }
-
-
-
-        // impl
+//        }
 
         emit NewReceiptsProofs(channelID);
     }
@@ -234,6 +226,10 @@ contract GeoEthChannels {
         // make sure that channel opened
         require(channels[channelID].state != ChannelStates.Uninitialized);
         require(channels[channelID].state != ChannelStates.Closed);
+
+        //make sure that requested balances not exceeds channel balance
+        require(channels[channelID].balanceAlice + channels[channelID].balanceBob >=
+        balanceAlice + balanceBob);
 
         // verify alice's signature of message
         require(channels[channelID].alice == extractCooperativeCloseSignature(
