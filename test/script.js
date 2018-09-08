@@ -23,10 +23,13 @@ console.log(acct.privateKey + " " + acct.address);
 //     )
 // );
 
-message_hash = web3.utils.hexToBytes("0x69adc78af3b0a9d6ed9eaa93db40666990aeca08ff417dbbf39383f31020ea37");
+message_hash = "0x69adc78af3b0a9d6ed9eaa93db40666990aeca08ff417dbbf39383f31020ea37";
+
+let messagePacked = web3.eth.abi.encode(['bytes32','uint256','uint256','address'], ["0x0000000000000000000000000000000022222", 22222, 22222, "0x0000002200000000000000000000000000000000"])
+console.log(messagePacked);
 
 let message = acct.sign(message_hash);
-let sig = message.signature;
+let sig = message;
 
 console.log(sig);
 // let sigBytes = web3.utils.hexToBytes(sig);

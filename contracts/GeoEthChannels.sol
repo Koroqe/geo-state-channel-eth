@@ -12,6 +12,7 @@ contract GeoEthChannels {
 
     mapping(bytes32 => Channel) public channels; // map of all channels, bytes32 -> Channel
     mapping(bytes32 => ClosingRequest) public closingRequests; // map of all closing requests, channel_id -> CloseRequest
+    mapping(bytes32 => ReceiptsBalances) public receiptsBalances;
 
     enum ChannelStates {
         Uninitialized,
@@ -31,9 +32,14 @@ contract GeoEthChannels {
 
     struct ClosingRequest {
         uint256 closingRequested; //number of block at which request created
-        uint256 auditEpoch;
+        uint256 channelEpoch;
         uint128 aliceNonce;
         uint128 bobNonce;
+    }
+
+    struct ReceiptsBalances {
+        uint256 aliceReceived;
+        uint256 bobReceived;
     }
 
     /// EXTERNAL
@@ -60,12 +66,12 @@ contract GeoEthChannels {
     external
     returns(
         uint256 closingRequested,
-        uint256 auditEpoch,
+        uint256 channelEpoch,
         uint128 aliceNonce,
         uint128 bobNonce)
     {
         closingRequested = closingRequests[channelID].closingRequested;
-        auditEpoch = closingRequests[channelID].auditEpoch;
+        channelEpoch = closingRequests[channelID].channelEpoch;
         aliceNonce = closingRequests[channelID].aliceNonce;
         bobNonce = closingRequests[channelID].bobNonce;
     }
@@ -102,12 +108,11 @@ contract GeoEthChannels {
 
     /// @dev makes channel bidirectional
     function respondChannel(
-        address alice,
-        uint256 amount)
+        address alice)
     external
     payable
     {
-        bytes32 channelID = calcChannelID(msg.sender, alice);
+        bytes32 channelID = calcChannelID(alice, msg.sender);
 
         // make sure, that channel still opened
         require(channels[channelID].state == ChannelStates.Unidirectional);
@@ -138,8 +143,8 @@ contract GeoEthChannels {
         require(channels[channelID].state != ChannelStates.Closed);
         require(channels[channelID].state != ChannelStates.Uninitialized);
 
-        // make sure that audit epoch bigger than stored now
-        require(closingRequests[channelID].auditEpoch < auditEpoch);
+        // make sure that audit epoch is match or bigger than stored now
+        require(auditEpoch >= closingRequests[channelID].channelEpoch);
 
         // make sure that channel not ready to close
         require(closingRequests[channelID].closingRequested + closingTimeout > block.number);
@@ -172,27 +177,44 @@ contract GeoEthChannels {
         // update channel and request data
         channels[channelID].balanceAlice = balanceAlice;
         channels[channelID].balanceBob = balanceBob;
-        closingRequests[channelID].auditEpoch = auditEpoch;
+        closingRequests[channelID].channelEpoch = auditEpoch + 1;
 
         emit NewAuditProofs(channelID);
     }
 
     function receiptsProofSettlement(
-        bytes32 channelID
+        bytes32 channelID,
+        uint256 channelEpoch,
+        address receiver,
+        uint256[] receiptID,
+        uint256[] amount,
+        bytes32[] rs,
+        uint8[] v
     )
     external
     {
-
         // make sure that channel still not closed or uninitialized
         require(channels[channelID].state != ChannelStates.Closed);
         require(channels[channelID].state != ChannelStates.Uninitialized);
 
         // set settlement if closing not requested yet
-        if (closingRequests[channelID].closingRequested == 0) {
+        if (closingRequests[channelID].closingRequested == 0 && closingRequests[channelID].channelEpoch == 0) {
             closingRequests[channelID].closingRequested = block.number;
         }
 
-        // allow to settle with receipts only from epoch 0
+        bool isAliceReceiver = channels[channelID].alice == receiver ? true : false;
+
+        for (uint256 i = 0; i < receiptID.length; i++) {
+
+            // make sure that signer is from correct channel
+            require()
+
+            // make sure that receiptID is bigger than sender's nonce
+
+            // make sure that channelEpoch in receipt is fit to current epoch
+
+
+
 
         // impl
 
