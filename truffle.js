@@ -1,15 +1,10 @@
-/*
-    File 'test_private_key.js' should be created in root directory.
-
-    export default function getPrivate() {
-        return "0x32129c03c654c24814c2bb730e556fc79e1024505addb231a22536d18c142a7"
-    }
- */
-
-import getPrivate from './test_private_key';
-
 const PrivateKeyProvider = require('truffle-privatekey-provider');
-const privateKey = getPrivate();
+const PRIVATE = require('./test_private_key');
+/*
+    File 'test_private_key.js' should be created in root directory with following:
+
+    module.exports.PRIVATE = "use_your_private_key_here";
+ */
 
 module.exports = {
     // See <http://truffleframework.com/docs/advanced/configuration>
@@ -27,9 +22,8 @@ module.exports = {
             gas: 76000000
         },
         infura_rinkeby: {
-            provider: _ => new PrivateKeyProvider(privateKey, `https://rinkeby.infura.io/`),
-            network_id: '*',
-            gas: highGas
+            provider: _ => new PrivateKeyProvider(PRIVATE, `https://rinkeby.infura.io/`),
+            network_id: '*'
         },
     }
 };
