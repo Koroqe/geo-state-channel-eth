@@ -1,10 +1,10 @@
 const PrivateKeyProvider = require('truffle-privatekey-provider');
 const {PRIVATE} = require('./test_private_key');
 /*
-    File 'test_private_key.js' should be created in root directory with following:
+    For correct work file 'test_private_key.js' should be created in root directory with following:
 
     module.exports.PRIVATE = "use_your_private_key_here";
- */
+*/
 
 module.exports = {
     // See <http://truffleframework.com/docs/advanced/configuration>
