@@ -44,6 +44,6 @@ https://github.com/HaySayCheese/EthSC_GEO_ETHBerlin
 
 ## Contract in live net
 
-Deployed contract in Rinkeby
+Deployed contract in Rinkeby testnet:
 
 `0x4b37635bde74f27f28c9dc6d7e2f6584289d248c`
