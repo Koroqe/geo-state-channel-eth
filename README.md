@@ -1,6 +1,6 @@
 # Ethereum state channel for GEO protocol
 
-The state channel that enables instant ETH payments between two nodes with Ethereum blockchain accounts. It completely fits GEO protocol payments mechanism. 
+The state channel that enables instant ETH payments between two nodes with Ethereum blockchain accounts. It completely fits GEO protocol payments algorythm. 
 
 The channel has 5 main states: `Uninitialized, Unidirectional, Bidirectional, Settled, Closed`
 
