@@ -20,6 +20,8 @@ The channel lifecycle is as follows:
 
 ![State_channel_lifecycle3](https://github.com/Koroqe/geo-state-channel-eth/blob/master/images/Screenshot_10.png)
 
+Presentation link: https://docs.google.com/presentation/d/1HNhj0JxOa-g0GmBpJx7jy8rIV23onR6hpLEGkyVwil4/edit?usp=sharing
+
 ## Setup
 
 1. `npm install truffle -g`
