@@ -41,3 +41,9 @@ Presentation link: https://docs.google.com/presentation/d/1HNhj0JxOa-g0GmBpJx7jy
 For more information about usage state channels and crosschain payments in protocol please visit:
 
 https://github.com/HaySayCheese/EthSC_GEO_ETHBerlin
+
+## Contract in live net
+
+Deployed contract in Rinkeby
+
+`0x4b37635bde74f27f28c9dc6d7e2f6584289d248c`
